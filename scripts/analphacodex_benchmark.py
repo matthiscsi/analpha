@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Benchmark analphacodex output tokens against normal output tokens."""
+"""Benchmark analpha output tokens against normal output tokens."""
 
 from __future__ import annotations
 
@@ -152,12 +152,12 @@ def format_report(counted: list[CountedSample], measurement: str, details: bool)
     run_reduction = 0.0 if normal_run_total == 0 else (saved_total / normal_run_total) * 100
 
     lines = [
-        "analphacodex benchmark:",
+        "analpha benchmark:",
         f"- measurement: {measurement}",
         f"- samples: {len(counted)}",
         f"- input/context tokens: {context_total}",
         f"- normal output tokens: {normal_total}",
-        f"- analphacodex output tokens: {analphacodex_total}",
+        f"- analpha output tokens: {analphacodex_total}",
         f"- output tokens saved for sample set: {saved_total}",
         f"- output reduction for sample set: {output_reduction:.1f}%",
     ]
@@ -166,7 +166,7 @@ def format_report(counted: list[CountedSample], measurement: str, details: bool)
         lines.extend(
             [
                 f"- normal total run tokens: {normal_run_total}",
-                f"- analphacodex total run tokens: {analphacodex_run_total}",
+                f"- analpha total run tokens: {analphacodex_run_total}",
                 f"- total run reduction with provided context: {run_reduction:.1f}%",
             ]
         )
@@ -177,7 +177,7 @@ def format_report(counted: list[CountedSample], measurement: str, details: bool)
         for index, item in enumerate(counted, start=1):
             lines.append(
                 f"{index}. {item.sample.mode}: context={item.context_tokens}, "
-                f"normal_output={item.normal_tokens}, analphacodex_output={item.analphacodex_tokens}, "
+                f"normal_output={item.normal_tokens}, analpha_output={item.analphacodex_tokens}, "
                 f"output_saved={item.saved_tokens}"
             )
 
@@ -186,7 +186,7 @@ def format_report(counted: list[CountedSample], measurement: str, details: bool)
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Compare known normal outputs with known analphacodex outputs."
+        description="Compare known normal outputs with known analpha outputs."
     )
     parser.add_argument(
         "--input",

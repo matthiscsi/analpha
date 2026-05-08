@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Manual estimated stats for the analphacodex skill."""
+"""Manual estimated stats for the analpha skill."""
 
 from __future__ import annotations
 
@@ -95,7 +95,7 @@ def format_stats(stats: dict[str, Any]) -> str:
 
     return "\n".join(
         [
-            "analphacodex manual estimated stats:",
+            "analpha manual estimated stats:",
             f"- recorded replies: {total}",
             f"- smart: {stats['smart_replies']}",
             f"- emoji: {stats['emoji_replies']}",
@@ -111,7 +111,7 @@ def format_stats(stats: dict[str, Any]) -> str:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Track manual estimated analphacodex token savings.")
+    parser = argparse.ArgumentParser(description="Track manual estimated analpha token savings.")
     subparsers = parser.add_subparsers(dest="command")
 
     record_parser = subparsers.add_parser("record", help="Record one or more estimated replies.")

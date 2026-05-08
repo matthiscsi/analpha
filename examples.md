@@ -3,8 +3,8 @@
 ## Smart mode
 
 ```text
-User: analphacodex smart
-Assistant: analphacodex smart mode enabled.
+User: analpha smart
+Assistant: analpha smart mode enabled.
 ```
 
 ```text
@@ -29,8 +29,8 @@ Critical: this can break Windows and cause data loss.
 ## Emoji mode
 
 ```text
-User: analphacodex emoji
-Assistant: analphacodex emoji mode enabled.
+User: analpha emoji
+Assistant: analpha emoji mode enabled.
 ```
 
 ```text
@@ -46,8 +46,8 @@ Assistant: ⛔
 ## Ultra mode
 
 ```text
-User: analphacodex ultra
-Assistant: analphacodex ultra mode enabled.
+User: analpha ultra
+Assistant: analpha ultra mode enabled.
 ```
 
 ```text

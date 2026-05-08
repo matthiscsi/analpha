@@ -1,27 +1,75 @@
-# analphacodex
+<p align="center">
+  <img src="assets/analpha-wide.png" alt="analpha for Codex" width="100%">
+</p>
 
-analphacodex is a token-saving Codex skill for quick approval, rejection, and sanity-check interactions.
+<h1 align="center">analpha</h1>
 
-It uses compact verdicts instead of normal explanations unless the selected mode allows explanation.
+<p align="center">
+  <strong>No explanations. Just real work.</strong>
+</p>
+
+<p align="center">
+  <img alt="Codex skill" src="https://img.shields.io/badge/Codex-skill-00d7e6">
+  <img alt="Mode" src="https://img.shields.io/badge/default-smart-18d48f">
+  <img alt="Output reduction" src="https://img.shields.io/badge/output_reduction-92.9%25-18d48f">
+  <img alt="License" src="https://img.shields.io/badge/license-TBD-lightgrey">
+</p>
+
+`analpha` is a token-saving Codex skill for quick approval, rejection, and sanity-check work.
+
+It excels in workload environments where explanation is unnecessary and only real work matters: high-volume checks, repeated approvals, quick safety gates, CI sanity decisions, operational triage, and “is this safe to proceed?” workflows.
+
+The installed skill is still named `analphacodex` for compatibility, but the preferred command name is now `analpha`.
+
+---
+
+## Before / After
+
+### Normal Codex
+
+> Yes, this looks safe enough to proceed. I do not see an obvious blocker from the context provided.
+
+### analpha smart
+
+> ✅  
+> Looks safe enough.
+
+Same decision. Less ceremony.
+
+---
 
 ## Modes
 
-- Smart mode: default. Usually answers only `✅` or `⛔`. Short explanations are allowed when explicitly requested or when risk is critical.
-- Emoji mode: strict `✅` or `⛔` only.
-- Ultra mode: strict `Y` or `N` only.
+| Mode | Command | Output | Use case |
+| --- | --- | --- | --- |
+| Smart | `analpha smart` | `✅`, `⛔`, or very short critical reason | Default. Good balance of safety and brevity. |
+| Emoji | `analpha emoji` | `✅` or `⛔` only | Strict visual approval/rejection. |
+| Ultra | `analpha ultra` | `Y` or `N` only | Maximum token-saving. |
 
-## Commands
+Backward-compatible commands still work:
 
-- `analphacodex on` - enable smart mode.
-- `analphacodex smart` - enable smart mode.
-- `analphacodex emoji` - enable strict emoji mode.
-- `analphacodex ultra` - enable strict ultra mode.
-- `analphacodex off` - disable analphacodex.
-- `analphacodex help` - show a short command list.
-- `analphacodex stats` - show manual estimated token-saving stats.
-- `analphacodex benchmark` - compare known normal outputs with known analphacodex outputs.
+```text
+analphacodex smart
+analphacodex emoji
+analphacodex ultra
+```
 
-## Examples
+---
+
+## Usage
+
+```text
+analpha on
+analpha smart
+analpha emoji
+analpha ultra
+analpha off
+analpha help
+analpha stats
+analpha benchmark
+```
+
+Examples:
 
 ```text
 User: is this okay?
@@ -43,81 +91,134 @@ Critical: this can break Windows and cause data loss.
 ```
 
 ```text
-User: analphacodex emoji
-Assistant: analphacodex emoji mode enabled.
-
-User: is this okay? explain
-Assistant: ✅
-```
-
-```text
-User: analphacodex ultra
-Assistant: analphacodex ultra mode enabled.
+User: analpha ultra
+Assistant: analpha ultra mode enabled.
 
 User: should I delete System32?
 Assistant: N
 ```
 
-## Stats limitation
+---
 
-Stats are manual estimates, not automatic telemetry and not exact tokenizer measurements.
+## Receipts
 
-The helper script uses these assumptions:
+Benchmarks are measured with `tiktoken` using `o200k_base`.
 
-- Normal short Codex answer: 60 tokens.
-- Smart symbol-only answer: 2 tokens.
-- Smart explanation answer: 20 tokens.
-- Emoji answer: 2 tokens.
-- Ultra answer: 1 token.
+### Quick sanity checks
 
-Codex skills cannot guarantee automatic tracking in every runtime. When feasible, the skill records replies with `scripts/analphacodex_stats.py`; otherwise `analphacodex stats` should be treated as a local approximation.
+Command:
 
-Useful commands:
-
-```powershell
-python scripts/analphacodex_stats.py
-python scripts/analphacodex_stats.py record --mode smart
-python scripts/analphacodex_stats.py record --mode smart --explanation
-python scripts/analphacodex_stats.py record --mode emoji --count 10
-python scripts/analphacodex_stats.py path
-python scripts/analphacodex_stats.py reset
+```bash
+python ./scripts/analphacodex_benchmark.py --input ./benchmarks/usage_samples.jsonl --details
 ```
 
-## Benchmarking
+Result:
 
-For better measurement, use benchmark samples instead of the manual stats counter.
+```text
+samples: 7
+normal output tokens: 90
+analpha output tokens: 28
+output tokens saved: 62
+output reduction: 68.9%
+```
 
-Run an exact tokenizer benchmark after installing `tiktoken` in the Python environment:
+### Large workload checks
 
-```powershell
+Command:
+
+```bash
+python ./scripts/analphacodex_benchmark.py --input ./benchmarks/large_usage_samples.jsonl --details
+```
+
+Result:
+
+```text
+samples: 4
+input/context tokens: 310000
+normal output tokens: 411
+analpha output tokens: 29
+output tokens saved: 382
+output reduction: 92.9%
+normal total run tokens: 310411
+analpha total run tokens: 310029
+total run reduction with provided context: 0.1%
+```
+
+Interpretation: analpha is excellent at reducing assistant output. In huge-context runs, total run savings are smaller because the prompt, files, diffs, logs, and tool context dominate token usage.
+
+---
+
+## Benchmark Your Own Workload
+
+Install the tokenizer dependency once:
+
+```bash
 python -m pip install tiktoken
-python scripts/analphacodex_benchmark.py --input benchmarks/usage_samples.jsonl --details
-python scripts/analphacodex_benchmark.py --input benchmarks/large_usage_samples.jsonl --details
 ```
 
-Run a non-exact smoke test without dependencies:
+Run the provided benchmarks:
 
-```powershell
-python scripts/analphacodex_benchmark.py --approx --details
+```bash
+python ./scripts/analphacodex_benchmark.py --input ./benchmarks/usage_samples.jsonl --details
+python ./scripts/analphacodex_benchmark.py --input ./benchmarks/large_usage_samples.jsonl --details
 ```
 
-The benchmark file is JSONL. Each row compares one normal Codex output with one analphacodex output:
-
-```json
-{"prompt":"is this okay?","mode":"smart","normal_output":"Yes, this looks safe enough to proceed.","analphacodex_output":"✅"}
-```
-
-For large tasks, add either `input_context_tokens` or `input_context_text`:
+Add your own JSONL rows:
 
 ```json
 {"prompt":"review huge diff","mode":"smart","input_context_tokens":85000,"normal_output":"Long normal answer...","analphacodex_output":"⛔\nRisky: destructive migration without rollback evidence."}
 ```
 
-This supports an honest claim:
+Honest claim format:
 
 ```text
-For this sample set, analphacodex reduced output tokens by X%.
-For this sample set, analphacodex reduced total run tokens by Y% when including provided context tokens.
+For this sample set, analpha reduced assistant output tokens by X%.
+For this sample set, analpha reduced total run tokens by Y% when including provided context tokens.
 ```
 
-It does not prove exact live savings unless real production outputs and a defensible baseline are captured.
+---
+
+## Stats
+
+The stats script is a manual local counter, not automatic telemetry.
+
+```bash
+python ./scripts/analphacodex_stats.py
+python ./scripts/analphacodex_stats.py record --mode smart
+python ./scripts/analphacodex_stats.py record --mode emoji --count 10
+python ./scripts/analphacodex_stats.py reset
+```
+
+Use benchmarks for evidence. Use stats only for rough local tracking.
+
+---
+
+## Safety Rule
+
+When unsure, block.
+
+`analpha` should not approve destructive, illegal, security-sensitive, high-cost, or ambiguous actions just to save tokens. Smart mode may still explain briefly when the situation is critical.
+
+---
+
+## Install
+
+Copy the skill folder into your Codex skills directory:
+
+```text
+C:\Users\<you>\.codex\skills\analphacodex
+```
+
+Then restart Codex.
+
+Preferred command:
+
+```text
+analpha on
+```
+
+Compatibility command:
+
+```text
+analphacodex on
+```

@@ -1,11 +1,13 @@
 ---
 name: analphacodex
-description: Token-saving quick verdict skill for approval, rejection, sanity checks, and yes/no safety decisions. Use when the user invokes analphacodex, asks for compact approval/rejection, or uses commands such as "analphacodex on", "analphacodex smart", "analphacodex emoji", "analphacodex ultra", "analphacodex off", "analphacodex help", or "analphacodex stats".
+description: Token-saving quick verdict skill for approval, rejection, sanity checks, and yes/no safety decisions. Use when the user invokes analpha or analphacodex, asks for compact approval/rejection, or uses commands such as "analpha on", "analpha smart", "analpha emoji", "analpha ultra", "analpha off", "analpha help", "analpha stats", or "analpha benchmark".
 ---
 
-# analphacodex
+# analpha
 
-Use analphacodex for quick approval, rejection, and sanity-check interactions where the user wants minimum-token verdicts. Default to Smart mode when analphacodex is enabled and no other mode is active.
+Use analpha for quick approval, rejection, and sanity-check interactions where the user wants minimum-token verdicts. It excels in workload environments where explanation is unnecessary and only real work matters. Default to Smart mode when analpha is enabled and no other mode is active.
+
+Treat `analpha` as the preferred command name. Keep `analphacodex` as a backward-compatible alias.
 
 ## State
 
@@ -16,21 +18,23 @@ Maintain the active mode in the conversation:
 - `emoji`: strict emoji-only mode.
 - `ultra`: strict ASCII-only mode.
 
-If the user says `analphacodex on` or `analphacodex smart`, enable `smart`.
-If the user says `analphacodex emoji`, enable `emoji`.
-If the user says `analphacodex ultra`, enable `ultra`.
-If the user says `analphacodex off`, set mode to `off` and stop applying this skill until re-enabled.
+If the user says `analpha on`, `analpha smart`, `analphacodex on`, or `analphacodex smart`, enable `smart`.
+If the user says `analpha emoji` or `analphacodex emoji`, enable `emoji`.
+If the user says `analpha ultra` or `analphacodex ultra`, enable `ultra`.
+If the user says `analpha off` or `analphacodex off`, set mode to `off` and stop applying this skill until re-enabled.
 
 Control commands may return short normal text:
 
-- `analphacodex on`: `analphacodex smart mode enabled.`
-- `analphacodex smart`: `analphacodex smart mode enabled.`
-- `analphacodex emoji`: `analphacodex emoji mode enabled.`
-- `analphacodex ultra`: `analphacodex ultra mode enabled.`
-- `analphacodex off`: `analphacodex disabled.`
-- `analphacodex help`: show a very short command list including `on`, `smart`, `emoji`, `ultra`, `off`, `stats`, `benchmark`, and `help`.
-- `analphacodex stats`: show manual estimated stats using `scripts/analphacodex_stats.py` when tool execution is available; otherwise give a short limitation note.
-- `analphacodex benchmark`: compare known normal outputs with known analphacodex outputs using `scripts/analphacodex_benchmark.py`.
+- `analpha on`: `analpha smart mode enabled.`
+- `analpha smart`: `analpha smart mode enabled.`
+- `analpha emoji`: `analpha emoji mode enabled.`
+- `analpha ultra`: `analpha ultra mode enabled.`
+- `analpha off`: `analpha disabled.`
+- `analpha help`: show a very short command list including `on`, `smart`, `emoji`, `ultra`, `off`, `stats`, `benchmark`, and `help`.
+- `analpha stats`: show manual estimated stats using `scripts/analphacodex_stats.py` when tool execution is available; otherwise give a short limitation note.
+- `analpha benchmark`: compare known normal outputs with known analphacodex outputs using `scripts/analphacodex_benchmark.py`.
+
+For `analphacodex ...` aliases, return the same control-command response with `analphacodex` in the message if the user used that name.
 
 ## Verdicts
 
