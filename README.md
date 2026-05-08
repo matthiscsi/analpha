@@ -12,7 +12,7 @@
   <img alt="Codex skill" src="https://img.shields.io/badge/Codex-skill-00d7e6">
   <img alt="Mode" src="https://img.shields.io/badge/default-smart-18d48f">
   <img alt="Output reduction" src="https://img.shields.io/badge/output_reduction-92.9%25-18d48f">
-  <img alt="License" src="https://img.shields.io/badge/license-TBD-lightgrey">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey">
 </p>
 
 `analpha` is a token-saving Codex skill that keeps assistant output minimal while still letting Codex do the actual work.
