@@ -15,35 +15,32 @@
   <img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey">
 </p>
 
-`analpha` is a token-saving Codex skill that keeps assistant output minimal while still letting Codex do the actual work.
+`analpha` is a token-saving Codex skill that keeps Codex quiet after the work is done.
 
-It is built for workflows where long explanations are noise: repeated checks, quick approvals, code review gates, operational triage, CI sanity checks, and “can I continue?” decisions.
-
-By default, `analpha` answers with a simple approval or block signal:
+Instead of long confirmations, summaries, and obvious explanations, it returns a simple signal:
 
 ```text
 ✅
 ```
 
-or
+or:
 
 ```text
 ⛔
 ```
 
-When something is blocked, unsafe, ambiguous, or requires user action, `analpha` can still speak up briefly.
+Codex still does the work.  
+`analpha` just reduces the noise.
+
+It is useful for repeated checks, quick approvals, code review gates, CI sanity checks, operational triage, and “can I continue?” decisions.
+
+When something is blocked, unsafe, ambiguous, or needs user action, `analpha` can still speak briefly.
 
 The installed skill is still named `analphacodex` for compatibility, but the preferred command name is now `analpha`.
 
 ---
 
-## What it is
-
-Codex is useful, but it often talks too much.
-
-For many tasks, you do not need a paragraph explaining that something passed. You need Codex to do the work, run the check, make the decision, and give you a fast signal.
-
-`analpha` is for that.
+## What it does
 
 | Situation | Output |
 | --- | --- |
@@ -54,13 +51,17 @@ For many tasks, you do not need a paragraph explaining that something passed. Yo
 | Explanation requested | Short explanation |
 | Critical context missing | Short clarification |
 
-Same work. Less output.
+The goal is simple:
+
+```text
+same work, less output
+```
 
 ---
 
 ## Example: actual work
 
-Instead of asking Codex to explain every step, you can tell it to do the job and only report the result.
+Use it when you want Codex to fix something, not explain the obvious.
 
 ```text
 User:
@@ -76,24 +77,20 @@ Requirements:
 - run the relevant checks if available
 ```
 
-Normal Codex might respond with a long implementation summary, assumptions, reasoning, and test explanation.
+Normal Codex might reply with a long summary of what it changed.
 
-With `analpha`, Codex still edits the files, runs the relevant checks if available, and then responds with:
+With `analpha`, Codex still edits the files and runs the checks, but the final response becomes:
 
 ```text
 ✅
 ```
 
-If something blocks the work, it should say so briefly:
+If something blocks the work:
 
 ```text
 ⛔
 Build check failed: missing dependency `@vitejs/plugin-react`.
 ```
-
-The point is not to make Codex dumber.
-
-The point is to stop wasting output on obvious confirmations.
 
 ---
 
@@ -111,7 +108,7 @@ The navigation bar has been updated successfully. I adjusted the sticky position
 ✅
 ```
 
-Same work. Less output.
+Same result. Fewer tokens.
 
 ---
 
@@ -119,11 +116,11 @@ Same work. Less output.
 
 | Mode | Command | Output | Use case |
 | --- | --- | --- | --- |
-| Smart | `analpha smart` | `✅`, `⛔`, or a very short critical reason | Default. Best balance of brevity and safety. |
-| Emoji | `analpha emoji` | `✅` or `⛔` only | Strict visual approval/rejection. |
+| Smart | `analpha smart` | `✅`, `⛔`, or short critical reason | Default mode. Brief, but still safe. |
+| Emoji | `analpha emoji` | `✅` or `⛔` only | Strict approval/block signal. |
 | Ultra | `analpha ultra` | `Y` or `N` only | Maximum output reduction. |
 
-Backward-compatible commands still work:
+Backward-compatible commands:
 
 ```text
 analphacodex smart
@@ -177,140 +174,24 @@ Assistant: N
 
 ---
 
-## Benchmark Results
+## Benchmarks
 
-Benchmarks are measured with `tiktoken` using `o200k_base`.
+Measured with `tiktoken` using `o200k_base`.
 
-These are controlled benchmark sets. They compare known normal outputs against known `analpha` outputs for the same prompts.
+These are controlled local benchmark sets, not live Codex telemetry.
 
-They are not automatic live Codex telemetry.
+| Benchmark | Samples | Output reduction | Total run reduction |
+| --- | ---: | ---: | ---: |
+| Average work | 20 | 86.8% | 6.1% |
+| Real workload | 20 | 89.6% | 0.2% |
+| Quick sanity checks | 7 | 68.9% | N/A |
+| Large workload checks | 4 | 92.9% | 0.1% |
 
-### Average work benchmark
+Important: `analpha` reduces assistant output. It does not remove large input context.
 
-This is the most representative benchmark for everyday usage.
+If a run loads huge files, diffs, logs, or tool context, total token savings will be smaller because most tokens are already spent before the final reply.
 
-Dataset:
-
-```text
-benchmarks/average_work_samples.jsonl
-```
-
-Scope:
-
-```text
-everyday coding, workplace, review, support, docs, and operational sanity-check prompts
-```
-
-Result:
-
-```text
-samples: 20
-input/context tokens: 10880
-normal output tokens: 816
-analpha output tokens: 108
-output tokens saved: 708
-output reduction: 86.8%
-normal total run tokens: 11696
-analpha total run tokens: 10988
-total run reduction with provided context: 6.1%
-expected verdict matches: 20/20
-```
-
-Claim:
-
-```text
-For this controlled 20-question average-work sample set, analpha reduced assistant output tokens by 86.8% and total tokens by 6.1% when including provided context estimates.
-```
-
-### Real workload benchmark
-
-Dataset:
-
-```text
-benchmarks/workload_effectiveness_samples.jsonl
-```
-
-Scope:
-
-```text
-frontend, infrastructure, CI, security, production operations, documentation, IAM, DNS, Kubernetes, Terraform, and logging
-```
-
-Result:
-
-```text
-samples: 20
-input/context tokens: 618000
-normal output tokens: 1160
-analpha output tokens: 121
-output tokens saved: 1039
-output reduction: 89.6%
-normal total run tokens: 619160
-analpha total run tokens: 618121
-total run reduction with provided context: 0.2%
-expected verdict matches: 20/20
-```
-
-This benchmark includes approve and block cases:
-
-```text
-approve cases: 10
-block cases: 10
-critical/security-sensitive block cases: 8
-expected verdict matches: 20/20
-```
-
-### Quick sanity checks
-
-Dataset:
-
-```text
-benchmarks/usage_samples.jsonl
-```
-
-Result:
-
-```text
-samples: 7
-normal output tokens: 90
-analpha output tokens: 28
-output tokens saved: 62
-output reduction: 68.9%
-```
-
-### Large workload checks
-
-Dataset:
-
-```text
-benchmarks/large_usage_samples.jsonl
-```
-
-Result:
-
-```text
-samples: 4
-input/context tokens: 310000
-normal output tokens: 411
-analpha output tokens: 29
-output tokens saved: 382
-output reduction: 92.9%
-normal total run tokens: 310411
-analpha total run tokens: 310029
-total run reduction with provided context: 0.1%
-```
-
----
-
-## How to read the numbers
-
-`analpha` is very good at reducing assistant output.
-
-It does not magically remove huge input context.
-
-If a run loads a massive codebase, diff, log dump, or tool context, total token savings will be smaller because most tokens are already spent before the assistant replies.
-
-Honest claim:
+Good claim:
 
 ```text
 analpha reduces assistant output tokens significantly in the included benchmark samples.
@@ -322,19 +203,17 @@ Bad claim:
 analpha always saves 90% of all Codex tokens.
 ```
 
-Real savings depend on how much context the task loads.
-
 ---
 
-## Benchmark Your Own Workload
+## Run benchmarks
 
-Install the tokenizer dependency once:
+Install dependency:
 
 ```bash
 python -m pip install tiktoken
 ```
 
-Run the provided benchmarks:
+Run:
 
 ```bash
 python ./scripts/analphacodex_benchmark.py --input ./benchmarks/usage_samples.jsonl --details
@@ -343,24 +222,11 @@ python ./scripts/analphacodex_benchmark.py --input ./benchmarks/workload_effecti
 python ./scripts/analphacodex_benchmark.py --input ./benchmarks/large_usage_samples.jsonl --details
 ```
 
-Add your own JSONL rows:
-
-```json
-{"prompt":"review huge diff","mode":"smart","input_context_tokens":85000,"normal_output":"Long normal answer...","analphacodex_output":"⛔\nRisky: destructive migration without rollback evidence."}
-```
-
-Honest claim format:
-
-```text
-For this sample set, analpha reduced assistant output tokens by X%.
-For this sample set, analpha reduced total run tokens by Y% when including provided context tokens.
-```
-
 ---
 
 ## Stats
 
-The stats script is a manual local counter, not automatic telemetry.
+The stats script is a manual local counter, not telemetry.
 
 ```bash
 python ./scripts/analphacodex_stats.py
@@ -368,10 +234,6 @@ python ./scripts/analphacodex_stats.py record --mode smart
 python ./scripts/analphacodex_stats.py record --mode emoji --count 10
 python ./scripts/analphacodex_stats.py reset
 ```
-
-Use benchmarks for evidence.
-
-Use stats only for rough local tracking.
 
 ---
 
@@ -381,9 +243,7 @@ When unsure, block.
 
 `analpha` should not approve destructive, illegal, security-sensitive, high-cost, or ambiguous actions just to save tokens.
 
-Smart mode may still explain briefly when the situation is critical.
-
-Examples of things that should be blocked or require a short reason:
+Examples:
 
 ```text
 ⛔
@@ -407,16 +267,14 @@ Do not paste API tokens into GitHub issues.
 
 ---
 
-## When not to use it
-
-Do not use `analpha` when you actually need reasoning, teaching, planning, or detailed debugging output.
+## When to use it
 
 Good fit:
 
 ```text
 - approval checks
 - repeated review gates
-- quick “safe or not?” decisions
+- quick safe/not-safe decisions
 - CI sanity decisions
 - simple done/blocked reporting
 - high-volume Codex workflows
@@ -425,11 +283,11 @@ Good fit:
 Bad fit:
 
 ```text
-- learning a new concept
+- learning
 - architecture explanations
-- debugging without enough context
+- detailed debugging
 - writing documentation from scratch
-- tasks where you need a detailed audit trail
+- tasks where you need a full audit trail
 ```
 
 ---
@@ -442,7 +300,7 @@ Copy the skill folder into your Codex skills directory:
 C:\Users\<you>\.codex\skills\analphacodex
 ```
 
-Then restart Codex.
+Restart Codex.
 
 Preferred command:
 
