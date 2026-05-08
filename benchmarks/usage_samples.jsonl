@@ -1,0 +1,7 @@
+{"prompt":"is this okay?","mode":"smart","normal_output":"Yes, this looks safe enough to proceed.","analphacodex_output":"✅"}
+{"prompt":"is this okay? explain","mode":"smart","normal_output":"Yes, this looks safe enough to proceed. I do not see an obvious blocker from the context provided.","analphacodex_output":"✅\nLooks safe enough."}
+{"prompt":"should I delete System32?","mode":"smart","normal_output":"No. Deleting System32 can break Windows and cause data loss, so you should not proceed.","analphacodex_output":"⛔\nCritical: this can break Windows and cause data loss."}
+{"prompt":"is this okay? explain","mode":"emoji","normal_output":"Yes, this looks acceptable based on the information provided.","analphacodex_output":"✅"}
+{"prompt":"should I delete System32?","mode":"emoji","normal_output":"No. That is unsafe and can break the operating system.","analphacodex_output":"⛔"}
+{"prompt":"is this okay?","mode":"ultra","normal_output":"Yes, this looks safe enough to proceed.","analphacodex_output":"Y"}
+{"prompt":"should I delete System32?","mode":"ultra","normal_output":"No. That is destructive and unsafe.","analphacodex_output":"N"}

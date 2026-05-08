@@ -1,0 +1,7 @@
+interface:
+  display_name: "analphacodex"
+  short_description: "Fast yes/no verdicts for Codex approvals"
+  default_prompt: "Use $analphacodex for a compact approval or rejection verdict."
+
+policy:
+  allow_implicit_invocation: true
