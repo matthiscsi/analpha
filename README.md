@@ -180,28 +180,16 @@ Measured with `tiktoken` using `o200k_base`.
 
 These are controlled local benchmark sets, not live Codex telemetry.
 
-| Benchmark | Samples | Output reduction | Total run reduction |
-| --- | ---: | ---: | ---: |
-| Average work | 20 | 86.8% | 6.1% |
-| Real workload | 20 | 89.6% | 0.2% |
-| Quick sanity checks | 7 | 68.9% | N/A |
-| Large workload checks | 4 | 92.9% | 0.1% |
+| Benchmark | Samples | Assistant output reduction |
+| --- | ---: | ---: |
+| Average work | 20 | 86.8% |
+| Real workload | 20 | 89.6% |
+| Quick sanity checks | 7 | 68.9% |
+| Large workload checks | 4 | 92.9% |
 
-Important: `analpha` reduces assistant output. It does not remove large input context.
+These numbers measure assistant output reduction.
 
-If a run loads huge files, diffs, logs, or tool context, total token savings will be smaller because most tokens are already spent before the final reply.
-
-Good claim:
-
-```text
-analpha reduces assistant output tokens significantly in the included benchmark samples.
-```
-
-Bad claim:
-
-```text
-analpha always saves 90% of all Codex tokens.
-```
+`analpha` is built to reduce unnecessary replies after Codex has already done the work.
 
 ---
 
