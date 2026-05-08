@@ -139,9 +139,6 @@ normal output tokens: 411
 analpha output tokens: 29
 output tokens saved: 382
 output reduction: 92.9%
-normal total run tokens: 310411
-analpha total run tokens: 310029
-total run reduction with provided context: 0.1%
 ```
 
 Interpretation: analpha is excellent at reducing assistant output. In huge-context runs, total run savings are smaller because the prompt, files, diffs, logs, and tool context dominate token usage.
