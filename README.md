@@ -15,11 +15,83 @@
   <img alt="License" src="https://img.shields.io/badge/license-TBD-lightgrey">
 </p>
 
-`analpha` is a token-saving Codex skill for quick approval, rejection, and sanity-check work.
+`analpha` is a token-saving Codex skill that keeps assistant output minimal while still letting Codex do the actual work.
 
-It excels in workload environments where explanation is unnecessary and only real work matters: high-volume checks, repeated approvals, quick safety gates, CI sanity decisions, operational triage, and “is this safe to proceed?” workflows.
+By default, it answers with a simple approval or block signal:
+
+```text
+✅
+```
+
+or
+
+```text
+⛔
+```
+
+It is built for workflows where long explanations are noise: repeated checks, quick approvals, code review gates, operational triage, CI sanity checks, and “can I continue?” decisions.
+
+When something is blocked, unsafe, ambiguous, or requires user action, `analpha` can still speak up briefly.
 
 The installed skill is still named `analphacodex` for compatibility, but the preferred command name is now `analpha`.
+
+---
+
+## Why
+
+Codex is useful, but it often talks too much.
+
+For many workflows, you do not need a paragraph explaining that something passed. You need a fast signal, then the next action.
+
+`analpha` keeps the result readable:
+
+| Situation | Output |
+| --- | --- |
+| Work completed | `✅` |
+| Safe to continue | `✅` |
+| Blocked | `⛔` |
+| Unsafe / destructive / unclear | `⛔` + short reason |
+| Explanation requested | Short explanation |
+
+Same decision. Less noise.
+
+---
+
+## Example: actual work
+
+Instead of asking Codex to explain every step, you can tell it to do the job and only report the result.
+
+```text
+User:
+analpha smart
+
+Fix the website top navigation bar.
+
+Requirements:
+- keep it sticky at the top
+- stop it from overlapping page content
+- make the mobile layout clean
+- keep the existing colors and branding
+- run the relevant checks if available
+```
+
+Normal Codex might reply with a long implementation summary, reasoning, assumptions, and test explanation.
+
+With `analpha`, Codex still does the work, edits the files, runs the checks, and then responds with:
+
+```text
+✅
+```
+
+If something blocks the work, it should say so briefly:
+
+```text
+⛔
+Build check failed: missing dependency `@vitejs/plugin-react`.
+```
+
+The point is not to make Codex dumber.  
+The point is to stop wasting output on obvious confirmations.
 
 ---
 
@@ -27,14 +99,17 @@ The installed skill is still named `analphacodex` for compatibility, but the pre
 
 ### Normal Codex
 
-> Yes, this looks safe enough to proceed. I do not see an obvious blocker from the context provided.
+```text
+The navigation bar has been updated successfully. I adjusted the sticky positioning, added spacing so the content no longer appears underneath it, improved the mobile layout, and verified that the relevant checks pass.
+```
 
-### analpha smart
+### analpha
 
-> ✅  
-> Looks safe enough.
+```text
+✅
+```
 
-Same decision. Less ceremony.
+Same work. Less output.
 
 ---
 
@@ -42,9 +117,9 @@ Same decision. Less ceremony.
 
 | Mode | Command | Output | Use case |
 | --- | --- | --- | --- |
-| Smart | `analpha smart` | `✅`, `⛔`, or very short critical reason | Default. Good balance of safety and brevity. |
+| Smart | `analpha smart` | `✅`, `⛔`, or a very short critical reason | Default. Best balance of brevity and safety. |
 | Emoji | `analpha emoji` | `✅` or `⛔` only | Strict visual approval/rejection. |
-| Ultra | `analpha ultra` | `Y` or `N` only | Maximum token-saving. |
+| Ultra | `analpha ultra` | `Y` or `N` only | Maximum output reduction. |
 
 Backward-compatible commands still work:
 
@@ -72,19 +147,19 @@ analpha benchmark
 Examples:
 
 ```text
-User: is this okay?
+User: Is this okay to continue?
 Assistant: ✅
 ```
 
 ```text
-User: is this okay? explain
+User: Is this okay to continue? Explain.
 Assistant:
 ✅
 Looks safe enough.
 ```
 
 ```text
-User: should I delete System32?
+User: Should I delete System32?
 Assistant:
 ⛔
 Critical: this can break Windows and cause data loss.
@@ -94,7 +169,7 @@ Critical: this can break Windows and cause data loss.
 User: analpha ultra
 Assistant: analpha ultra mode enabled.
 
-User: should I delete System32?
+User: Should I delete System32?
 Assistant: N
 ```
 
@@ -141,7 +216,7 @@ output tokens saved: 382
 output reduction: 92.9%
 ```
 
-Interpretation: analpha is excellent at reducing assistant output. In huge-context runs, total run savings are smaller because the prompt, files, diffs, logs, and tool context dominate token usage.
+Interpretation: `analpha` is excellent at reducing assistant output. In huge-context runs, total run savings are smaller because prompts, files, diffs, logs, and tool context dominate token usage.
 
 ---
 
@@ -194,7 +269,9 @@ Use benchmarks for evidence. Use stats only for rough local tracking.
 
 When unsure, block.
 
-`analpha` should not approve destructive, illegal, security-sensitive, high-cost, or ambiguous actions just to save tokens. Smart mode may still explain briefly when the situation is critical.
+`analpha` should not approve destructive, illegal, security-sensitive, high-cost, or ambiguous actions just to save tokens.
+
+Smart mode may still explain briefly when the situation is critical.
 
 ---
 
